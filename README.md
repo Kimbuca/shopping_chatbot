@@ -13,6 +13,21 @@ Chatbot en Messenger que mantiene conversaciones con el usuario para realizar bu
 ```
 npm install
 ```
+
+* Start your node server in your proyect folder
+```
+node server.js
+```
+* Start ngrok and copy your public URL (Ex: https://b7b75123.ngrok.io --> localhost: 3000)
+```
+ngrok http 3000
+```
 * Configure your facebook Developer account at: https://developers.facebook.com/
-...
+** Configure your webhook using your public ngrok URL adding "/webhook/facebook" at the end.
+** use "VerifyMe" to verify your webhook and wait to the "OK"
+** Go to your APP and generate your TOKEN
+** Subscribe your webhook to your fan page
+** Talk to your ChatBot :D!
+
+
 
