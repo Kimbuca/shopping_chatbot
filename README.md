@@ -8,7 +8,11 @@ Chatbot en Messenger que mantiene conversaciones con el usuario para realizar bu
 - Amazons "Rekognition" para el reconocimiento de imagenes
 - Wit.AI para realizar el procesamiento del lenguaje natural del usuario desde el chat.
 
+<<<<<<< HEAD
 ## Steps
+=======
+## Set Up
+>>>>>>> e0e2f88563dc22562e39fbe4253e0faa0f565e36
 - Install npm packages
 ```
 npm install
