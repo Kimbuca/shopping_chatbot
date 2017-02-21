@@ -3,8 +3,6 @@ const rp = require('request-promise');
 
 class Processor {
 
-
-
   generateImageOptions(responseObject){
 
       return {
@@ -99,9 +97,7 @@ class Processor {
       method: 'GET',
       json: true // Automatically parses the JSON string in the response
     };
-
     return rp(options);
-
   }
 
   setOptions(json){

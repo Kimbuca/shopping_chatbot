@@ -37,12 +37,12 @@ const controller = (function () {
                 console.log(recipientID);
                 //Manage input with Wit
 
-/*
+
                 processor.getResponse(data)
                     .then(response => {
                         var payload = {};
                         //payload.message = processor.generateImageOptions(response);
-                        payload.message = processor.generateCarouselleOptions(response, 3);
+                        payload.message = processor.generateCarouselleOptions(response, 5);
                         payload.recipient = {
                             id: data.entry[0].messaging[0].sender.id
                         };
@@ -54,8 +54,8 @@ const controller = (function () {
                     .catch(err => {
                         console.log(err);
                     })
-*/
-                
+
+                /*
                 var messageData = {
                   recipient: {
                     id: recipientID
@@ -65,7 +65,7 @@ const controller = (function () {
                   }
                 };
                 callSendAPI(messageData);
-                
+                */
                 res.sendStatus(200);
             }
 
@@ -119,7 +119,7 @@ function callSendAPI(messageData) {
     request({
         uri: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {
-            access_token: "EAAIZBZASCkVw0BAJTNplMNPLHFphACPI1N2WVCSyW1aH1KwmfkQCZCn5ZBt5FjMmWWYfodduitbhxlokxSjRrx3kIMxMJXasZASwFrht2bp5567H8bUKHY2BDy3S8dJylaDlSCwiARPrGc3ciaF18ZCCZBuRIwy5dwjXcAXLKVl7wZDZD"
+            access_token: "EAAIZBZASCkVw0BAEWHe61Y6ZBDWCrUzBNsDl9B7OXo5x4NUzds7jKyVLbP9ckJ22H8IpK6Ix6YV8DHwZCQSZAfHZCrTsZBUHiNIZCGCXWZAUsMyIEqZBJsrChZBHbBQqJakcZADsmXkHsFHgHNv5otY37d4IxEC6ZCidSIKbxdGlMnLQtMAZDZD"
         },
         method: 'POST',
         json: messageData
