@@ -9,6 +9,95 @@ var express = require("express");
 var weather = require('./js/weatherAPI');
 
 
+
+
+
+/**
+    WIT AI
+**/ 
+const sessionId = 'dasdasdasd';
+var context = {};
+var answer = '';
+
+const {Wit, log, interactive, runActions} = require('node-wit');
+require('dotenv').config();
+
+
+const firstEntityValue = (entities, entity) => {
+  const val = entities && entities.intent &&
+    Array.isArray(entities.intent) &&
+    entities.intent[0].entities[entity] &&
+    entities.intent[0].entities[entity][0].value
+
+  if (!val)
+    return null;
+
+  return typeof val === 'object' ? val.value : val;
+};
+
+const actions = {
+
+  send(request, response) {
+    const {sessionId, context, entities} = request;
+    const {text, quickreplies} = response;
+    console.log('user said:  ', request.text);
+    console.log('sending:  ', JSON.stringify(response));
+    answer = response.text;    //cambiar
+
+    },  
+
+  searchProduct({context, entities}) {
+    console.log('\n  MY ENTITY = ' + JSON.stringify(entities));
+    return new Promise(function(resolve, reject) {
+      var product = firstEntityValue(entities, "product")
+
+      context.result = product;
+      return resolve(context);
+    });
+  },
+};
+
+
+const client = new Wit({accessToken: process.env.WIT_TOKEN, actions});
+//interactive(client); //probarlo en consola
+
+//AIT METHOD
+/*
+client.message(text, {})
+    .then((data) => {
+      console.log('Yay, got Wit.ai response: ' + JSON.stringify(data));
+
+    }).catch(console.error);*/
+
+/**
+    WIT AI
+**/ 
+
+
+
+
+function sendToWit(sessionId, messageText, bot) {
+    // This will run all actions until nothing left to do
+    client.runActions(sessionId, // Current session
+        messageText, context // Current session state
+    ).then(function (cont) {
+       
+        console.log('The session state is now: ' + JSON.stringify(cont));
+        // Waiting for further messages to proceed.
+        if (cont['result']) {
+           //reset context or handle context
+        }
+    }).catch(function (err) {
+        console.error('WIT ERROR MSG: ', err.stack || err);
+    });
+}
+
+
+
+
+
+
+
 const bot = new Bot(process.env.PAGE_ACCESS_TOKEN, process.env.VERIFICATION);
 
 bot.on('message', async message => {
@@ -17,29 +106,27 @@ bot.on('message', async message => {
         sender
     } = message;
 
-    /*
-    await weather(message.text, function (currentWeather) {
-                console.log(currentWeather);
-            });
-    */
 
     await sender.fetch(`first_name,last_name,profile_pic`, true);
     console.log(`Received a message from ${sender.first_name} with id: ${sender.id}`);
+
     const {
         text, images, videos, location, audio
     } = message;
     
-    //Wit ai process identify
 
     if (text) {
-        console.log(text); // 'hey'
+    console.log("su texto " +text +"\n\n\n"); // 'hey'
+            
+        sendToWit(sessionId, text);
         //Text
         let out = new Elements();
         out.add({
-            text: `hey ${sender.first_name}, how are you!`
+            text: answer
         });
         await bot.send(sender.id, out);
     }
+
 
     if (images) {
         console.log(images); // ['http://...', 'http://...']
@@ -62,6 +149,7 @@ bot.on('message', async message => {
 
     //await Bot.wait(1000);
 
+    /*
     out = new Elements();
     out.add({
         image: sender.profile_pic
@@ -149,19 +237,14 @@ bot.on('message', async message => {
     out = new Elements();
     out.add({
         text: 'Send us your location'
-    });
-    out.setQuickReplies(replies);
-    await bot.send(sender.id, out);
+    });*/
+    //out.setQuickReplies(replies);
+    //await bot.send(sender.id, out);
 
     //await messenger.sendTextMessage(sender.id, message.text);
     //await messenger.sendHScrollMessage(sender.id, elems);
     //await messenger.sendButtonsMessage(sender.id, message.text,  buttons);
     //await messenger.sendImageMessage(sender.id, "https://pbs.twimg.com/profile_images/789099010749505537/vNRHXVoY_400x400.jpg");
-
-
-
-
-
     //await messenger.sendImageMessage(sender.id, sender.profile_pic);
 });
 
