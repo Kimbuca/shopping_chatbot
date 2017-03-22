@@ -7,7 +7,10 @@ var FBMessenger = require('fb-messenger');
 var messenger = new FBMessenger(process.env.PAGE_ACCESS_TOKEN);
 var express = require("express");
 var weather = require('./js/weatherAPI');
-
+var sendToWit = require('./wit/witclient');
+/**
+    WIT AI
+**/ 
 
 const bot = new Bot(process.env.PAGE_ACCESS_TOKEN, process.env.VERIFICATION);
 
@@ -17,29 +20,27 @@ bot.on('message', async message => {
         sender
     } = message;
 
-    /*
-    await weather(message.text, function (currentWeather) {
-                console.log(currentWeather);
-            });
-    */
 
     await sender.fetch(`first_name,last_name,profile_pic`, true);
     console.log(`Received a message from ${sender.first_name} with id: ${sender.id}`);
+
     const {
         text, images, videos, location, audio
     } = message;
     
-    //Wit ai process identify
 
     if (text) {
-        console.log(text); // 'hey'
+    console.log("su texto " +text +"\n\n\n"); // 'hey'
+            
+        sendToWit(sessionId, text);
         //Text
         let out = new Elements();
         out.add({
-            text: `hey ${sender.first_name}, how are you!`
+            text: 'ds'
         });
         await bot.send(sender.id, out);
     }
+
 
     if (images) {
         console.log(images); // ['http://...', 'http://...']
@@ -62,6 +63,7 @@ bot.on('message', async message => {
 
     //await Bot.wait(1000);
 
+    /*
     out = new Elements();
     out.add({
         image: sender.profile_pic
@@ -149,19 +151,14 @@ bot.on('message', async message => {
     out = new Elements();
     out.add({
         text: 'Send us your location'
-    });
-    out.setQuickReplies(replies);
-    await bot.send(sender.id, out);
+    });*/
+    //out.setQuickReplies(replies);
+    //await bot.send(sender.id, out);
 
     //await messenger.sendTextMessage(sender.id, message.text);
     //await messenger.sendHScrollMessage(sender.id, elems);
     //await messenger.sendButtonsMessage(sender.id, message.text,  buttons);
     //await messenger.sendImageMessage(sender.id, "https://pbs.twimg.com/profile_images/789099010749505537/vNRHXVoY_400x400.jpg");
-
-
-
-
-
     //await messenger.sendImageMessage(sender.id, sender.profile_pic);
 });
 
