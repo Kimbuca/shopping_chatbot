@@ -7,96 +7,10 @@ var FBMessenger = require('fb-messenger');
 var messenger = new FBMessenger(process.env.PAGE_ACCESS_TOKEN);
 var express = require("express");
 var weather = require('./js/weatherAPI');
-
-
-
-
-
+var sendToWit = require('./wit/witclient');
 /**
     WIT AI
 **/ 
-const sessionId = 'dasdasdasd';
-var context = {};
-var answer = '';
-
-const {Wit, log, interactive, runActions} = require('node-wit');
-require('dotenv').config();
-
-
-const firstEntityValue = (entities, entity) => {
-  const val = entities && entities.intent &&
-    Array.isArray(entities.intent) &&
-    entities.intent[0].entities[entity] &&
-    entities.intent[0].entities[entity][0].value
-
-  if (!val)
-    return null;
-
-  return typeof val === 'object' ? val.value : val;
-};
-
-const actions = {
-
-  send(request, response) {
-    const {sessionId, context, entities} = request;
-    const {text, quickreplies} = response;
-    console.log('user said:  ', request.text);
-    console.log('sending:  ', JSON.stringify(response));
-    answer = response.text;    //cambiar
-
-    },  
-
-  searchProduct({context, entities}) {
-    console.log('\n  MY ENTITY = ' + JSON.stringify(entities));
-    return new Promise(function(resolve, reject) {
-      var product = firstEntityValue(entities, "product")
-
-      context.result = product;
-      return resolve(context);
-    });
-  },
-};
-
-
-const client = new Wit({accessToken: process.env.WIT_TOKEN, actions});
-//interactive(client); //probarlo en consola
-
-//AIT METHOD
-/*
-client.message(text, {})
-    .then((data) => {
-      console.log('Yay, got Wit.ai response: ' + JSON.stringify(data));
-
-    }).catch(console.error);*/
-
-/**
-    WIT AI
-**/ 
-
-
-
-
-function sendToWit(sessionId, messageText, bot) {
-    // This will run all actions until nothing left to do
-    client.runActions(sessionId, // Current session
-        messageText, context // Current session state
-    ).then(function (cont) {
-       
-        console.log('The session state is now: ' + JSON.stringify(cont));
-        // Waiting for further messages to proceed.
-        if (cont['result']) {
-           //reset context or handle context
-        }
-    }).catch(function (err) {
-        console.error('WIT ERROR MSG: ', err.stack || err);
-    });
-}
-
-
-
-
-
-
 
 const bot = new Bot(process.env.PAGE_ACCESS_TOKEN, process.env.VERIFICATION);
 
@@ -122,7 +36,7 @@ bot.on('message', async message => {
         //Text
         let out = new Elements();
         out.add({
-            text: answer
+            text: 'ds'
         });
         await bot.send(sender.id, out);
     }
