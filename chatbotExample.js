@@ -5,9 +5,11 @@ const {
 } = require("facebook-messenger-bot");
 var FBMessenger = require('fb-messenger');
 var messenger = new FBMessenger(process.env.PAGE_ACCESS_TOKEN);
+
+const sessionId = 'dasdasdasd';
 var express = require("express");
 var weather = require('./js/weatherAPI');
-var sendToWit = require('./wit/witclient');
+var wit = require('./wit/witclient');
 /**
     WIT AI
 **/ 
@@ -30,9 +32,12 @@ bot.on('message', async message => {
     
 
     if (text) {
-    console.log("su texto " +text +"\n\n\n"); // 'hey'
-            
-        sendToWit(sessionId, text);
+        console.log("su texto " +text +"\n\n\n"); // 'hey'
+    
+        wit.sendToWit(text).then(data => {
+            console.log("respuesta", data);
+        });
+        
         //Text
         let out = new Elements();
         out.add({
@@ -166,5 +171,5 @@ bot.on('message', async message => {
 const app = express();
 app.use('/facebook', bot.router());
 
-app.listen(3000);
+app.listen(3011);
 console.log("Listo bro");

@@ -1,38 +1,52 @@
 require('dotenv').config();
-const sessionId = 'dasdasdasd';
-var context = {};
-var answer = '';
-var actions = require('./actions');
 
-const {Wit, log, interactive, runActions} = require('node-wit');
-const client = new Wit({accessToken: process.env.WIT_TOKEN, actions});
+const {Wit, log} = require('node-wit');
+const client = new Wit({accessToken: process.env.WIT_TOKEN});
 
-interactive(client);
 
-exports.sendToWit = function(sessionId, messageText) {
-    // This will run all actions until nothing left to do
-    client.runActions(sessionId, // Current session
-            messageText, context // Current session state
-    ).then(function (context) {
-        console.log('The session state is now: ' + JSON.stringify(context));
-        // Waiting for further messages to proceed.
-        if (context['result']) {
-           //reset context or handle context ?? //context 
-        }   
-    }).catch(function (err) {
-        console.error('WIT ERROR MSG: ', err.stack || err);
-    });
+const getIntent = (entity) => {
+    return entity.entities.intent[0].value;
 }
 
+//used to extract individual entities 'product', 'price'
+const specifiedEntityValue = (set, entity) => {
 
-/*
-client.message(text, {})
-    .then((data) => {
-      console.log('Yay, got Wit.ai response: ' + JSON.stringify(data));
+  var val = null;
+  try{ 
+        val = set.entities.intent[0].entities[entity][0].value
+  }catch(e){
+    if (e instanceof TypeError) {
+        return null;
+    }
+  }
+  if (!val)
+    return null; 
 
-    }).catch(console.error);*/
+  return typeof val === 'object' ? val.value : val;
+};
 
+exports.sendToWit = function(message){
 
+    return new Promise(function(accept, reject){
+        client.message(message, {}) //se le pasa el contexto
+        .then((data) => {
+
+            let product = specifiedEntityValue(data, "product");
+
+            if(!product){
+                let intent = getIntent(data);
+                accept({intention: intent});
+                return;
+            }else{
+                accept({intention: "search", product: product});
+                return;
+            }
+        })
+        .catch(err => {
+            reject(err);
+        })
+    });
+}
 
 
 
